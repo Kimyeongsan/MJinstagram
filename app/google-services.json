@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "602763264682-0lmi7928bml4esvof22uh7h84k8btquk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mjinstagram",
+            "certificate_hash": "5558ede06422bd54cb0fe53af51d4b128bc50fc3"
+          }
+        },
+        {
           "client_id": "602763264682-69vhfn7v2f7umbrdvbfqocn3sqt4oich.apps.googleusercontent.com",
           "client_type": 3
         }
