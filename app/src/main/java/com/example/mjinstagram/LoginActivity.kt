@@ -1,10 +1,12 @@
 package com.example.mjinstagram
 
 import android.app.Activity
+
 import android.content.Intent
-import android.content.SyncRequest
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.View
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.facebook.AccessToken
@@ -16,18 +18,15 @@ import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.*
-import com.twitter.sdk.android.core.Callback
-import com.twitter.sdk.android.core.Result
-
-import com.twitter.sdk.android.core.Twitter
-import com.twitter.sdk.android.core.TwitterException
-import com.twitter.sdk.android.core.TwitterSession
+import com.twitter.sdk.android.core.*
 import com.twitter.sdk.android.core.identity.TwitterAuthClient
-
 import kotlinx.android.synthetic.main.activity_login.*
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+import android.util.Base64;
 import java.util.*
 
 
@@ -80,8 +79,24 @@ class LoginActivity : AppCompatActivity() {
 
         //트위터 로그인 세팅
         twitter_login_btn.setOnClickListener { twitterLogin() }
-
     }
+
+//    해쉬 키를 받아오는 함수
+//    fun printHashKey() {
+//        try {
+//            val info: PackageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
+//            for (signature in info.signatures) {
+//                val md = MessageDigest.getInstance("SHA")
+//                md.update(signature.toByteArray())
+//                val hashKey = String(Base64.encode(md.digest(), 0))
+//                Log.i("TAG", "printHashKey() Hash Key: $hashKey")
+//            }
+//        } catch (e: NoSuchAlgorithmException) {
+//            Log.e("TAG", "printHashKey()", e)
+//        } catch (e: Exception) {
+//            Log.e("TAG", "printHashKey()", e)
+//        }
+//    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
