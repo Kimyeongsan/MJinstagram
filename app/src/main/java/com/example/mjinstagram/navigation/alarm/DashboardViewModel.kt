@@ -1,4 +1,4 @@
-package com.example.mjinstagram.ui.dashboard
+package com.example.mjinstagram.navigation.alarm
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

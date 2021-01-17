@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".navigation.notice.HomeFragment">
+    tools:context=".navigation.alarm.DashboardFragment">
 
     <TextView
-        android:id="@+id/text_notifications"
+        android:id="@+id/text_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
