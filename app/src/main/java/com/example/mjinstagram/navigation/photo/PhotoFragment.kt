@@ -1,4 +1,4 @@
-package com.example.mjinstagram.navigation.alarm
+package com.example.mjinstagram.navigation.notice
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,20 +10,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.mjinstagram.R
 
-class DashboardFragment : Fragment() {
+class PhotoFragment : Fragment() {
 
-    private lateinit var dashboardViewModel: DashboardViewModel
+    private lateinit var photoViewModel: PhotoViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        dashboardViewModel =
-                ViewModelProvider(this).get(DashboardViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_dashboard, container, false)
-        val textView: TextView = root.findViewById(R.id.text_dashboard)
-        dashboardViewModel.text.observe(viewLifecycleOwner, Observer {
+        photoViewModel =
+                ViewModelProvider(this).get(PhotoViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_photo, container, false)
+        val textView: TextView = root.findViewById(R.id.text_photo)
+        photoViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
         return root

@@ -1,4 +1,4 @@
-package com.example.mjinstagram.navigation.notice
+package com.example.mjinstagram.navigation.search
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,20 +10,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.mjinstagram.R
 
-class UserFragment : Fragment() {
+class SearchFragment : Fragment() {
 
-    private lateinit var UserViewModel : userViewModel
+    private lateinit var searchViewModel: SearchViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        userViewModel =
-                ViewModelProvider(this).get(HomeViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_user, container, false)
-        val textView: TextView = root.findViewById(R.id.text_user)
-        userViewModel.text.observe(viewLifecycleOwner, Observer {
+        searchViewModel =
+                ViewModelProvider(this).get(SearchViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_search, container, false)
+        val textView: TextView = root.findViewById(R.id.text_search)
+        searchViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
         return root
