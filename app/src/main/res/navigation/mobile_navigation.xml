@@ -7,31 +7,32 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.mjinstagram.navigation.dataView.DataFragment"
+        android:name="com.example.mjinstagram.navigation.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_search"
         android:name="com.example.mjinstagram.navigation.search.SearchFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/title_search"
         tools:layout="@layout/fragment_search" />
 
-    <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.mjinstagram.navigation.notice.HomeFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
 
     <fragment
         android:id="@+id/navigation_photo"
-        android:name="com.example.mjinstagram.navigation.notice.HomeFragment"
+        android:name="com.example.mjinstagram.navigation.photo.PhotoFragment"
+        android:label="@string/title_photo"
+        tools:layout="@layout/fragment_photo" />
+
+    <fragment
+        android:id="@+id/navigation_notifications"
+        android:name="com.example.mjinstagram.navigation.notice.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
 
     <fragment
-        android:id="@+id/navigation_search"
-        android:name="com.example.mjinstagram.navigation.notice.HomeFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_account"
+        android:name="com.example.mjinstagram.navigation.account.AccountFragment"
+        android:label="@string/title_account"
+        tools:layout="@layout/fragment_account" />
 </navigation>

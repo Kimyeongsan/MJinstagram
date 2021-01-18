@@ -8,7 +8,9 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="210dp"
-        android:layout_margin="10dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:src="@drawable/logo_title">
     </ImageView>
 
@@ -39,12 +41,13 @@
 
         <android.widget.Button
             android:id="@+id/sign_in_btn"
-            android:layout_width="match_parent"
+            android:layout_width="250dp"
             android:layout_height="37dp"
-            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
             android:layout_marginLeft="23dp"
             android:layout_marginRight="23dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="30dp"
             android:text="SIGNUP OR SIGN BY EMAILL"
             android:background="@color/purple_200">
         </android.widget.Button>
@@ -69,17 +72,6 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/btn_signin_google"
             android:text="google Login">
-        </android.widget.Button>
-
-        <android.widget.Button
-            android:id="@+id/twitter_login_btn"
-            android:layout_width="match_parent"
-            android:layout_height="37dp"
-            android:layout_marginLeft="23dp"
-            android:layout_marginRight="23dp"
-
-            android:background="@drawable/btn_signin_twitter"
-            android:text="twitter Login">
         </android.widget.Button>
 
     </LinearLayout>

@@ -1,4 +1,4 @@
-package com.example.mjinstagram.navigation.notice
+package com.example.mjinstagram.navigation.photo
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.mjinstagram.R
+import com.example.mjinstagram.navigation.notice.PhotoViewModel
 
 class PhotoFragment : Fragment() {
 

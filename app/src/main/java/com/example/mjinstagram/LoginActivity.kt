@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import android.util.Base64;
+import androidx.appcompat.app.ActionBar
 import java.util.*
 
 
@@ -77,8 +78,9 @@ class LoginActivity : AppCompatActivity() {
         //페이스북 로그인 세팅
         facebook_login_btn.setOnClickListener { facebookLogin() }
 
-        //트위터 로그인 세팅
-        twitter_login_btn.setOnClickListener { twitterLogin() }
+        var actionBar: ActionBar?
+        actionBar = supportActionBar
+        actionBar?.hide()
     }
 
 //    해쉬 키를 받아오는 함수
@@ -152,28 +154,6 @@ class LoginActivity : AppCompatActivity() {
 
             override fun onError(error: FacebookException) {
 //                progress_bar.visibility = View.GONE
-            }
-        })
-    }
-
-    fun twitterLogin() {
-//        progress_bar.visibility = View.VISIBLE
-        twitterAuthClient?.authorize(this, object : Callback<TwitterSession>() {
-            override fun success(result: Result<TwitterSession>?) {
-                val credential = TwitterAuthProvider.getCredential(
-                        result?.data?.authToken?.token!!,
-                        result?.data?.authToken?.secret!!)
-                auth?.signInWithCredential(credential)?.addOnCompleteListener { task ->
-//                    progress_bar.visibility = View.GONE
-                    //다음 페이지 이동
-                    if (task.isSuccessful) {
-                        moveMainPage(auth?.currentUser)
-                    }
-                }
-            }
-
-            override fun failure(exception: TwitterException?) {
-                println(exception.toString())
             }
         })
     }

@@ -1,4 +1,4 @@
-package com.example.mjinstagram.navigation.dataView
+package com.example.mjinstagram.navigation.account
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,20 +10,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.mjinstagram.R
 
-class DataFragment : Fragment() {
+class AccountFragment : Fragment() {
 
-    private lateinit var dataViewModel: DataViewModel
+    private lateinit var accountViewModel: AccountViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        dataViewModel =
-                ViewModelProvider(this).get(DataViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_data, container, false)
+        accountViewModel =
+                ViewModelProvider(this).get(AccountViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_account, container, false)
         val textView: TextView = root.findViewById(R.id.text_data)
-        dataViewModel.text.observe(viewLifecycleOwner, Observer {
+        accountViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
         return root
