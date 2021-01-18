@@ -21,12 +21,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.*
-import com.twitter.sdk.android.core.*
-import com.twitter.sdk.android.core.identity.TwitterAuthClient
 import kotlinx.android.synthetic.main.activity_login.*
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
-import android.util.Base64;
 import androidx.appcompat.app.ActionBar
 import java.util.*
 
@@ -46,11 +41,9 @@ class LoginActivity : AppCompatActivity() {
     val GOOGLE_LOGIN_CODE = 9001 // Intent Request ID
 
     //TwitterLogin
-    var twitterAuthClient: TwitterAuthClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Twitter.initialize(this)
         setContentView(R.layout.activity_login)
 
         // Firebase 로그인 통합 관리하는 Object 만들기
@@ -65,9 +58,6 @@ class LoginActivity : AppCompatActivity() {
         //구글 로그인 클래스를 만듬
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         callbackManager = CallbackManager.Factory.create()
-
-        //트위터 세팅
-        twitterAuthClient = TwitterAuthClient()
 
         //이메일 로그인 세팅
         sign_in_btn.setOnClickListener { emailLogin() }
@@ -106,8 +96,6 @@ class LoginActivity : AppCompatActivity() {
         // Facebook SDK로 값 넘겨주기
         callbackManager?.onActivityResult(requestCode, resultCode, data)
 
-        //Twitter SDK로 값 넘겨주기
-        twitterAuthClient?.onActivityResult(requestCode, resultCode, data)
 
         // 구글에서 승인된 정보를 가지고 오기
         if (requestCode == GOOGLE_LOGIN_CODE && resultCode == Activity.RESULT_OK) {
