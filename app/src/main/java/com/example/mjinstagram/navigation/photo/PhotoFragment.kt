@@ -92,7 +92,6 @@ class PhotoFragment : Fragment() {
             val uri = taskSnapshot.downloadUrl
             //디비에 바인딩 할 위치 생성 및 컬렉션(테이블)에 데이터 집합 생성
 
-
             //시간 생성
             val contentDTO = PhotoDTO()
 
