@@ -24,6 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".navigation.photo.PhotoActivity"/>
 
         <!-- 페이스북 로그인 웹뷰액티비티 설정값 -->
         <meta-data
