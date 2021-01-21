@@ -72,47 +72,42 @@ class PhotoActivity : AppCompatActivity() {
     }
 
     fun contentUpload(){
-        progress_bar.visibility = View.VISIBLE
 
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val imageFileName = "JPEG_" + timeStamp + "_.png"
+
         val storageRef = storage?.reference?.child("images")?.child(imageFileName)
-        storageRef?.putFile(photoUri!!)?.addOnSuccessListener{ taskSnapshot ->
-            progress_bar.visibility = View.GONE
+        storageRef?.putFile(photoUri!!)?.addOnSuccessListener {
+            storageRef.downloadUrl.addOnSuccessListener { uri ->
 
             Toast.makeText(this, getString(R.string.upload_success),
                     Toast.LENGTH_SHORT).show()
+            val contentDTO = PhotoDTO()
 
-//            val uri = taskSnapshot.downloadUrl
-//            //디비에 바인딩 할 위치 생성 및 컬렉션(테이블)에 데이터 집합 생성
-//
-//
-//            //시간 생성
-//            val contentDTO = PhotoDTO()
-//
-//            //이미지 주소
-//            contentDTO.imageUrl = uri!!.toString()
-//            //유저의 UID
-//            contentDTO.uid = auth?.currentUser?.uid
-//            //게시물의 설명
-//            contentDTO.explain = addphoto_edit_explain.text.toString()
-//            //유저의 아이디
-//            contentDTO.userId = auth?.currentUser?.email
-//            //게시물 업로드 시간
-//            contentDTO.timestamp = System.currentTimeMillis()
-//
-//            //게시물을 데이터를 생성 및 엑티비티 종료
-//            firestore?.collection("images")?.document()?.set(contentDTO)
-//
-//            setResult(Activity.RESULT_OK)
-//            finish()
+            //이미지 주소
+            contentDTO.imageUrl = uri.toString()
+            //유저의 UID
+            contentDTO.uid = auth?.currentUser?.uid
+            //게시물의 설명
+            contentDTO.explain = addphoto_edit_explain.text.toString()
+            //유저의 아이디
+            contentDTO.userId = auth?.currentUser?.email
+            //게시물 업로드 시간
+            contentDTO.timestamp = System.currentTimeMillis()
+
+            //게시물을 데이터를 생성 및 엑티비티 종료
+            firestore?.collection("images")?.document()?.set(contentDTO)
+
+            setResult(Activity.RESULT_OK)
+            finish()
+            }
         }
-//                ?.addOnFailureListener {
-//                    progress_bar.visibility = View.GONE
-//
-//                    Toast.makeText(this, getString(R.string.upload_fail),
-//                            Toast.LENGTH_SHORT).show()
-//                }
+                ?.addOnFailureListener {
+                    progress_bar.visibility = View.GONE
+
+                    Toast.makeText(this, getString(R.string.upload_fail),
+                            Toast.LENGTH_SHORT).show()
+                }
     }
 
 

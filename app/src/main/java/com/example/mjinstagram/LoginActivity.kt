@@ -68,8 +68,7 @@ class LoginActivity : AppCompatActivity() {
         //페이스북 로그인 세팅
         facebook_login_btn.setOnClickListener { facebookLogin() }
 
-        var actionBar: ActionBar?
-        actionBar = supportActionBar
+        var actionBar: ActionBar? = supportActionBar
         actionBar?.hide()
     }
 

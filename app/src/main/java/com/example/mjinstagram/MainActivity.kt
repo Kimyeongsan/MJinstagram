@@ -28,8 +28,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         nav_view.setOnNavigationItemSelectedListener(this)
         nav_view.selectedItemId = R.id.navigation_home
 
-        var actionBar: ActionBar?
-        actionBar = supportActionBar
+        var actionBar: ActionBar? = supportActionBar
         actionBar?.hide()
 
         // 앨범 접근 권한 요청
@@ -80,16 +79,4 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
         return false
     }
-
-
-//    fun naviation() {
-//        val navView: BottomNavigationView = findViewById(R.id.nav_view)
-//
-//        val navController = findNavController(R.id.nav_host_fragment)
-//        val appBarConfiguration = AppBarConfiguration(setOf(
-//                R.id.navigation_home, R.id.navigation_search, R.id.navigation_photo, R.id.navigation_notifications, R.id.navigation_account))
-//
-//        setupActionBarWithNavController(navController, appBarConfiguration)
-//        navView.setupWithNavController(navController)
-//    }
 }
