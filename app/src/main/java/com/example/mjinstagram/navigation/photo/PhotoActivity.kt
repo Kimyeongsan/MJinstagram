@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mjinstagram.R
-import com.example.mjinstagram.data.PhotoDTO
+import com.example.mjinstagram.data.ContentDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -82,7 +82,7 @@ class PhotoActivity : AppCompatActivity() {
 
             Toast.makeText(this, getString(R.string.upload_success),
                     Toast.LENGTH_SHORT).show()
-            val contentDTO = PhotoDTO()
+            val contentDTO = ContentDTO()
 
             //이미지 주소
             contentDTO.imageUrl = uri.toString()

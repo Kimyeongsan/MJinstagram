@@ -1,6 +1,6 @@
 package com.example.mjinstagram.data
 
-data class PhotoDTO(var explain: String? = null,
+data class ContentDTO(var explain: String? = null,
                       var imageUrl: String? = null,
                       var uid: String? = null,
                       var userId: String? = null,

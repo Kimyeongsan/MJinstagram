@@ -12,24 +12,30 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.mjinstagram.MainActivity
 import com.example.mjinstagram.R
-import com.example.mjinstagram.data.PhotoDTO
+import com.example.mjinstagram.data.AlarmDTO
+import com.example.mjinstagram.data.ContentDTO
+import com.example.mjinstagram.data.FollowDTO
+import com.example.mjinstagram.navigation.account.AccountFragment
+import com.example.mjinstagram.utill.FcmPush
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.squareup.okhttp.OkHttpClient
+
 import kotlinx.android.synthetic.main.acitivity_add_photo.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.item_home.view.*
 import java.util.ArrayList
 
 class HomeFragment : Fragment() {
-
     var user: FirebaseUser? = null
     var firestore: FirebaseFirestore? = null
     var imagesSnapshot: ListenerRegistration? = null
     var okHttpClient: OkHttpClient? = null
     var fcmPush: FcmPush? = null
     var mainView: View? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         user = FirebaseAuth.getInstance().currentUser
@@ -38,19 +44,19 @@ class HomeFragment : Fragment() {
         fcmPush = FcmPush()
 
         //리사이클러 뷰와 어뎁터랑 연결
-        mainView = inflater.inflate(R.layout.fragment_home, container, false)
-
+        mainView = LayoutInflater.from(activity).inflate(R.layout.fragment_home, container, false)
 
         return mainView
     }
 
     override fun onResume() {
         super.onResume()
-        mainView?.home_recycler?.layoutManager = LinearLayoutManager(activity)
-        mainView?.home_recycler?.adapter = DetailRecyclerViewAdapter()
-        var mainActivity = activity as MainActivity
-        mainActivity.progress_bar.visibility = View.INVISIBLE
 
+        home_recyclers.layoutManager = LinearLayoutManager(activity)
+        home_recyclers.adapter = DetailRecyclerViewAdapter()
+
+//        var mainActivity = activity as MainActivity
+//        mainActivity.progress_bar.visibility = View.INVISIBLE
     }
 
     override fun onStop() {
@@ -60,16 +66,16 @@ class HomeFragment : Fragment() {
 
     inner class DetailRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-        val contentDTOs: ArrayList<PhotoDTO>
+        val contentDTOS: ArrayList<ContentDTO>
         val contentUidList: ArrayList<String>
 
         init {
-            contentDTOs = ArrayList()
+            contentDTOS = ArrayList()
             contentUidList = ArrayList()
             var uid = FirebaseAuth.getInstance().currentUser?.uid
             firestore?.collection("users")?.document(uid!!)?.get()?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    var userDTO = task.result.toObject(FollowDTO::class.java)
+                    var userDTO = task.result?.toObject(FollowDTO::class.java)
                     if (userDTO?.followings != null) {
                         getCotents(userDTO?.followings)
                     }
@@ -79,14 +85,14 @@ class HomeFragment : Fragment() {
 
         fun getCotents(followers: MutableMap<String, Boolean>?) {
             imagesSnapshot = firestore?.collection("images")?.orderBy("timestamp")?.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                contentDTOs.clear()
+                contentDTOS.clear()
                 contentUidList.clear()
                 if (querySnapshot == null) return@addSnapshotListener
                 for (snapshot in querySnapshot!!.documents) {
-                    var item = snapshot.toObject(PhotoDTO::class.java)!!
+                    var item = snapshot.toObject(ContentDTO::class.java)!!
                     println(item.uid)
                     if (followers?.keys?.contains(item.uid)!!) {
-                        contentDTOs.add(item)
+                        contentDTOS.add(item)
                         contentUidList.add(snapshot.id)
                     }
                 }
@@ -107,11 +113,11 @@ class HomeFragment : Fragment() {
             val viewHolder = (holder as CustomViewHolder).itemView
 
             // Profile Image 가져오기
-            firestore?.collection("profileImages")?.document(contentDTOs[position].uid!!)
+            firestore?.collection("profileImages")?.document(contentDTOS[position].uid!!)
                     ?.get()?.addOnCompleteListener { task ->
                         if (task.isSuccessful) {
 
-                            val url = task.result["image"]
+                            val url = task.result?.get("image")
                             Glide.with(holder.itemView.context)
                                     .load(url)
                                     .apply(RequestOptions().circleCrop()).into(viewHolder.detailviewitem_profile_image)
@@ -122,33 +128,33 @@ class HomeFragment : Fragment() {
             //UserFragment로 이동
             viewHolder.detailviewitem_profile_image.setOnClickListener {
 
-                val fragment = UserFragment()
+                val fragment = AccountFragment()
                 val bundle = Bundle()
 
-                bundle.putString("destinationUid", contentDTOs[position].uid)
-                bundle.putString("userId", contentDTOs[position].userId)
+                bundle.putString("destinationUid", contentDTOS[position].uid)
+                bundle.putString("userId", contentDTOS[position].userId)
 
                 fragment.arguments = bundle
                 activity!!.supportFragmentManager.beginTransaction()
-                        .replace(R.id.main_content, fragment)
+                        .replace(R.id.nav_host_fragment, fragment)
                         .commit()
             }
 
             // 유저 아이디
-            viewHolder.detailviewitem_profile_textview.text = contentDTOs[position].userId
+            viewHolder.detailviewitem_profile_textview.text = contentDTOS[position].userId
 
             // 가운데 이미지
             Glide.with(holder.itemView.context)
-                    .load(contentDTOs[position].imageUrl)
+                    .load(contentDTOS[position].imageUrl)
                     .into(viewHolder.detailviewitem_imageview_content)
 
             // 설명 텍스트
-            viewHolder.detailviewitem_explain_textview.text = contentDTOs[position].explain
+            viewHolder.detailviewitem_explain_textview.text = contentDTOS[position].explain
             // 좋아요 이벤트
             viewHolder.detailviewitem_favorite_imageview.setOnClickListener { favoriteEvent(position) }
 
             //좋아요 버튼 설정
-            if (contentDTOs[position].favorites.containsKey(FirebaseAuth.getInstance().currentUser!!.uid)) {
+            if (contentDTOS[position].favorites.containsKey(FirebaseAuth.getInstance().currentUser!!.uid)) {
 
                 viewHolder.detailviewitem_favorite_imageview.setImageResource(R.drawable.ic_favorite)
 
@@ -157,12 +163,12 @@ class HomeFragment : Fragment() {
                 viewHolder.detailviewitem_favorite_imageview.setImageResource(R.drawable.ic_favorite_border)
             }
             //좋아요 카운터 설정
-            viewHolder.detailviewitem_favoritecounter_textview.text = "좋아요 " + contentDTOs[position].favoriteCount + "개"
+            viewHolder.detailviewitem_favoritecounter_textview.text = "좋아요 " + contentDTOS[position].favoriteCount + "개"
 
             viewHolder.detailviewitem_comment_imageview.setOnClickListener {
                 val intent = Intent(activity, CommentActivity::class.java)
                 intent.putExtra("contentUid", contentUidList[position])
-                intent.putExtra("destinationUid", contentDTOs[position].uid)
+                intent.putExtra("destinationUid", contentDTOS[position].uid)
                 startActivity(intent)
             }
 
@@ -184,7 +190,7 @@ class HomeFragment : Fragment() {
 
         override fun getItemCount(): Int {
 
-            return contentDTOs.size
+            return contentDTOS.size
 
         }
 
@@ -205,7 +211,7 @@ class HomeFragment : Fragment() {
                     // Star the post and add self to stars
                     contentDTO?.favoriteCount = contentDTO?.favoriteCount!! + 1
                     contentDTO?.favorites[uid] = true
-                    favoriteAlarm(contentDTOs[position].uid!!)
+                    favoriteAlarm(contentDTOS[position].uid!!)
                 }
                 transaction.set(tsDoc, contentDTO)
             }
