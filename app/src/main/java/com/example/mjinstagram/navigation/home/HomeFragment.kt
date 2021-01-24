@@ -25,6 +25,7 @@ import com.squareup.okhttp.OkHttpClient
 
 import kotlinx.android.synthetic.main.acitivity_add_photo.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.item_home.view.*
 import java.util.ArrayList
 
@@ -34,7 +35,7 @@ class HomeFragment : Fragment() {
     var imagesSnapshot: ListenerRegistration? = null
     var okHttpClient: OkHttpClient? = null
     var fcmPush: FcmPush? = null
-    var mainView: View? = null
+    var mainview: View? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -44,16 +45,17 @@ class HomeFragment : Fragment() {
         fcmPush = FcmPush()
 
         //리사이클러 뷰와 어뎁터랑 연결
-        mainView = LayoutInflater.from(activity).inflate(R.layout.fragment_home, container, false)
+        mainview = LayoutInflater.from(activity).inflate(R.layout.fragment_home, container, false)
 
-        return mainView
+
+        return mainview
     }
 
     override fun onResume() {
         super.onResume()
 
-        home_recyclers.layoutManager = LinearLayoutManager(activity)
-        home_recyclers.adapter = DetailRecyclerViewAdapter()
+        mainview?.home_recyclers?.layoutManager = LinearLayoutManager(activity)
+        mainview?.home_recyclers?.adapter = HomeRecyclerViewAdapter()
 
 //        var mainActivity = activity as MainActivity
 //        mainActivity.progress_bar.visibility = View.INVISIBLE
@@ -64,7 +66,7 @@ class HomeFragment : Fragment() {
         imagesSnapshot?.remove()
     }
 
-    inner class DetailRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    inner class HomeRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         val contentDTOS: ArrayList<ContentDTO>
         val contentUidList: ArrayList<String>

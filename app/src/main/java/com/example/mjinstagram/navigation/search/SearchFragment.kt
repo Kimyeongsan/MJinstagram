@@ -12,15 +12,15 @@ import com.example.mjinstagram.R
 
 class SearchFragment : Fragment() {
 
-    private lateinit var searchViewModel: SearchViewModel
+//    private lateinit var searchViewModel: SearchViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        searchViewModel =
-                ViewModelProvider(this).get(SearchViewModel::class.java)
+//        searchViewModel =
+//                ViewModelProvider(this).get(SearchViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_search, container, false)
 
         return root

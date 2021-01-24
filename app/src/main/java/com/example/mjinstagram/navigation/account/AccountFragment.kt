@@ -12,20 +12,20 @@ import com.example.mjinstagram.R
 
 class AccountFragment : Fragment() {
 
-    private lateinit var accountViewModel: AccountViewModel
+//    private lateinit var accountViewModel: AccountViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        accountViewModel =
-                ViewModelProvider(this).get(AccountViewModel::class.java)
+//        accountViewModel =
+//                ViewModelProvider(this).get(AccountViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_account, container, false)
-        val textView: TextView = root.findViewById(R.id.text_data)
-        accountViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
+//        val textView: TextView = root.findViewById(R.id.text_data)
+//        accountViewModel.text.observe(viewLifecycleOwner, Observer {
+//            textView.text = it
+//        })
         return root
     }
 }
