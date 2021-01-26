@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         actionBar?.hide()
 
         bottom_navigation()
+        bottom_nav.selectedItemId = R.id.navigation_home
 
         // 앨범 접근 권한 요청
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),1)

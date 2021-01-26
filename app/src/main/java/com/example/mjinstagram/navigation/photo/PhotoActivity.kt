@@ -20,7 +20,6 @@ class PhotoActivity : AppCompatActivity() {
     val PICK_IMAGE_FROM_ALBUM = 0
 
     var photoUri: Uri? = null
-
     var storage: FirebaseStorage? = null
     var firestore: FirebaseFirestore? = null
     private var auth: FirebaseAuth? = null
