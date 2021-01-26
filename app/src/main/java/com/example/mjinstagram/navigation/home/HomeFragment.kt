@@ -24,7 +24,6 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.squareup.okhttp.OkHttpClient
 
 import kotlinx.android.synthetic.main.acitivity_add_photo.*
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.item_home.view.*
 import java.util.ArrayList
@@ -33,6 +32,8 @@ class HomeFragment : Fragment() {
 
     var firestore: FirebaseFirestore? = null
 
+    var uid : String? = null
+
     var mainview: View? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -40,6 +41,8 @@ class HomeFragment : Fragment() {
         mainview = LayoutInflater.from(activity).inflate(R.layout.fragment_home, container, false)
 
         firestore = FirebaseFirestore.getInstance()
+
+        uid = FirebaseAuth.getInstance().currentUser?.uid
 
         mainview?.home_recyclers?.layoutManager = LinearLayoutManager(activity)
         mainview?.home_recyclers?.adapter = HomeRecyclerViewAdapter()
@@ -93,10 +96,43 @@ class HomeFragment : Fragment() {
             Glide.with(holder.itemView.context)
                     .load(contentDTOs[position].imageUrl)
                     .into(viewHolder.detailviewitem_profile_image)
+
+            // 좋아요 이벤트
+            viewHolder.detailviewitem_favorite_imageview.setOnClickListener { favoriteEvent(position) }
+
+            //좋아요 버튼 설정
+            if (contentDTOs[position].favorites.containsKey(FirebaseAuth.getInstance().currentUser!!.uid)) {
+                viewHolder.detailviewitem_favorite_imageview.setImageResource(R.drawable.ic_favorite)
+
+            } else {
+                viewHolder.detailviewitem_favorite_imageview.setImageResource(R.drawable.ic_favorite_border)
+            }
         }
 
         override fun getItemCount(): Int {
             return contentDTOs.size
+        }
+
+        //좋아요 이벤트 기능
+        private fun favoriteEvent(position: Int) {
+            var tsDoc = firestore?.collection("images")?.document(contentUidList[position])
+            firestore?.runTransaction { transaction ->
+
+                val uid = FirebaseAuth.getInstance().currentUser!!.uid
+                val contentDTO = transaction.get(tsDoc!!).toObject(ContentDTO::class.java)
+
+                if (contentDTO!!.favorites.containsKey(uid)) {
+                    // Unstar the post and remove self from stars
+                    contentDTO?.favoriteCount = contentDTO?.favoriteCount!! - 1
+                    contentDTO?.favorites.remove(uid)
+
+                } else {
+                    // Star the post and add self to stars
+                    contentDTO?.favoriteCount = contentDTO?.favoriteCount!! + 1
+                    contentDTO?.favorites[uid] = true
+                }
+                transaction.set(tsDoc, contentDTO)
+            }
         }
 
     }
