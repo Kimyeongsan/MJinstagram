@@ -9,18 +9,43 @@
     <Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:gravity="center">
+
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="43dp"
             android:layout_marginRight="10dp">
+
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="47dp"
-                android:src="@drawable/logo_title">
-            </ImageView>
+                android:id="@+id/toolbar_title_image"
+                android:layout_width="wrap_content"
+                android:layout_height="67dp"
+                android:layout_centerInParent="true"
+                android:layout_margin="3dp"
+                android:src="@drawable/logo_title" />
+
+            <ImageView
+                android:id="@+id/toolbar_btn_back"
+                android:layout_width="31dp"
+                android:layout_height="31dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_arrow_back"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="5dp"
+                />
+
+            <TextView
+                android:id="@+id/toolbar_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="user id"
+                android:gravity="center"
+                android:textColor="@color/colorNavIcon"
+                android:textSize="19sp"
+                android:layout_toRightOf="@+id/toolbar_btn_back"/>
         </RelativeLayout>
     </Toolbar>
 

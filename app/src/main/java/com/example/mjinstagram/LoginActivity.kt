@@ -229,7 +229,6 @@ class LoginActivity : AppCompatActivity() {
                 }
     }
 
-
 //    override fun onStart() {
 //        super.onStart()
 //
@@ -237,4 +236,5 @@ class LoginActivity : AppCompatActivity() {
 //        moveMainPage(auth?.currentUser)
 //
 //    }
+
 }

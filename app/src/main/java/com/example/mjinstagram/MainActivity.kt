@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +39,9 @@ class MainActivity : AppCompatActivity() {
 
     fun bottom_navigation() {
         bottom_nav.setOnNavigationItemSelectedListener {
+
+            setToolbarDefault()
+
             when (it.itemId) {
                 R.id.navigation_home -> {
 
@@ -89,5 +93,11 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+
+    fun setToolbarDefault() {
+        toolbar_title_image.visibility = View.VISIBLE
+        toolbar_btn_back.visibility = View.GONE
+        toolbar_username.visibility = View.GONE
     }
 }
