@@ -15,7 +15,6 @@ import com.example.mjinstagram.navigation.home.HomeFragment
 import com.example.mjinstagram.navigation.notice.NotificationsFragment
 import com.example.mjinstagram.navigation.photo.PhotoActivity
 import com.example.mjinstagram.navigation.search.SearchFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -25,37 +24,37 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        nav_view.setOnNavigationItemSelectedListener(this)
-//        nav_view.selectedItemId = R.id.navigation_home
-
         var actionBar: ActionBar? = supportActionBar
         actionBar?.hide()
+
+        bottom_navigation()
 
         // 앨범 접근 권한 요청
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),1)
 
-        nav()
     }
 
-    fun nav() {
-        nav_view.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
+    fun bottom_navigation() {
+        bottom_nav.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
                 R.id.navigation_home -> {
 
                     val homeFragment = HomeFragment()
                     supportFragmentManager.beginTransaction()
-                            .replace(R.id.nav_host_fragment, homeFragment)
+                            .replace(R.id.nav_view, homeFragment)
                             .commit()
                     true
                 }
+
                 R.id.navigation_search -> {
                     val searchFragment = SearchFragment()
                     supportFragmentManager
                             .beginTransaction()
-                            .replace(R.id.nav_host_fragment, searchFragment)
+                            .replace(R.id.nav_view, searchFragment)
                             .commit()
                     true
                 }
+
                 R.id.navigation_photo -> {
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                         startActivity(Intent(this, PhotoActivity::class.java))
@@ -64,23 +63,25 @@ class MainActivity : AppCompatActivity() {
                     }
                     true
                 }
+
                 R.id.navigation_notifications -> {
                     val notificationsFragment = NotificationsFragment()
-                    supportFragmentManager
-                            .beginTransaction()
-                            .replace(R.id.nav_host_fragment, notificationsFragment)
+                    supportFragmentManager.beginTransaction()
+                            .replace(R.id.nav_view, notificationsFragment)
                             .commit()
                     true
                 }
+
                 R.id.navigation_account -> {
                     val accountFragment = AccountFragment()
-                    supportFragmentManager.beginTransaction()
-                            .replace(R.id.nav_host_fragment, accountFragment)
+                    supportFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.nav_view, accountFragment)
                             .commit()
                     true
                 }
+                else -> false
             }
-            false
         }
     }
 }

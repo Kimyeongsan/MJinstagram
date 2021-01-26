@@ -138,7 +138,7 @@ class HomeFragment : Fragment() {
 
                 fragment.arguments = bundle
                 activity!!.supportFragmentManager.beginTransaction()
-                        .replace(R.id.nav_host_fragment, fragment)
+                        .replace(R.id.nav_view, fragment)
                         .commit()
             }
 
