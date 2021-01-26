@@ -15,6 +15,7 @@ import com.example.mjinstagram.navigation.home.HomeFragment
 import com.example.mjinstagram.navigation.notice.NotificationsFragment
 import com.example.mjinstagram.navigation.photo.PhotoActivity
 import com.example.mjinstagram.navigation.search.SearchFragment
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -75,6 +76,10 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.navigation_account -> {
                     val accountFragment = AccountFragment()
+                    val uid = FirebaseAuth.getInstance().currentUser!!.uid
+                    val bundle = Bundle()
+                    bundle.putString("destinationUid", uid)
+                    accountFragment.arguments = bundle
                     supportFragmentManager
                             .beginTransaction()
                             .replace(R.id.nav_view, accountFragment)
