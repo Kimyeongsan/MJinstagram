@@ -1,12 +1,15 @@
 package com.example.mjinstagram.navigation.account
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +36,8 @@ class AccountFragment : Fragment() {
     var auth: FirebaseAuth? = null
     var firestore: FirebaseFirestore? = null
 
+    val PICK_PROFILE_FROM_ALBUM = 10
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         root = inflater.inflate(R.layout.fragment_account, container, false)
@@ -49,6 +54,9 @@ class AccountFragment : Fragment() {
 
         // User 비교 문
         userCompare()
+
+        // 프로필 이미지 업로드
+        getProfileImage()
 
         return root
     }
@@ -81,7 +89,31 @@ class AccountFragment : Fragment() {
 //                root?.account_btn_follow_signout?.setOnClickListener {
 //                    requestFollow()
 //                }
+
+                // Profile Image Click Listener
+                root?.account_iv_profile?.setOnClickListener {
+                    if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                        //앨범 오픈
+                        var photoPickerIntent = Intent(Intent.ACTION_PICK)
+                        photoPickerIntent.type = "image/*"
+                        activity?.startActivityForResult(photoPickerIntent, PICK_PROFILE_FROM_ALBUM)
+                    }
+                }
             }
+
+    }
+
+    fun getProfileImage() {
+        firestore?.collection("profileImages")?.document(uid!!)
+                ?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+                    if(documentSnapshot == null)  return@addSnapshotListener
+                    if(documentSnapshot.data != null) {
+                        val url = documentSnapshot?.data!!["image"]
+                        Glide.with(requireActivity())
+                                .load(url)
+                                .apply(RequestOptions().circleCrop()).into(root!!.account_iv_profile)
+                    }
+                }
 
     }
 
