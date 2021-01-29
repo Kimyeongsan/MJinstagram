@@ -50,7 +50,7 @@ class AccountFragment : Fragment() {
         firestore = FirebaseFirestore.getInstance()
 
         root?.account_recyclerview?.adapter = AccountFragmentRecyclerViewAdapter()
-        root?.account_recyclerview?.layoutManager = GridLayoutManager(requireActivity(), 3)
+        root?.account_recyclerview?.layoutManager = GridLayoutManager(activity, 3)
 
         // User 비교 문
         userCompare()
@@ -125,7 +125,7 @@ class AccountFragment : Fragment() {
             firestore?.collection("images")?.whereEqualTo("uid", uid)?.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 contentDTOs.clear()
                 if (querySnapshot == null) return@addSnapshotListener
-                for (snapshot in querySnapshot?.documents!!) {
+                for (snapshot in querySnapshot.documents) {
                     contentDTOs.add(snapshot.toObject(ContentDTO::class.java)!!)
                 }
 

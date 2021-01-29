@@ -44,8 +44,8 @@ class HomeFragment : Fragment() {
 
         uid = FirebaseAuth.getInstance().currentUser?.uid
 
-        mainview?.home_recyclers?.layoutManager = LinearLayoutManager(activity)
         mainview?.home_recyclers?.adapter = HomeRecyclerViewAdapter()
+        mainview?.home_recyclers?.layoutManager = LinearLayoutManager(activity)
 
         return mainview
     }
@@ -64,7 +64,7 @@ class HomeFragment : Fragment() {
 
                 for (snapshot in querySnapshot!!.documents) {
                     var item = snapshot.toObject(ContentDTO::class.java)!!
-                    contentDTOs.add(item)
+                    contentDTOs.add(item!!)
                     contentUidList.add(snapshot.id)
                 }
                 notifyDataSetChanged()
