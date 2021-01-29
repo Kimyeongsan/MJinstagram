@@ -2,6 +2,7 @@ package com.example.mjinstagram.navigation.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils.replace
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -121,9 +122,7 @@ class HomeFragment : Fragment() {
                 bundle.putString("userId", contentDTOs[position].userId)
 
                 fragment.arguments = bundle
-                activity!!.supportFragmentManager.beginTransaction()
-                        .replace(R.id.nav_view, fragment)
-                        .commit()
+                activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.nav_view, fragment)?.commit()
             }
         }
 

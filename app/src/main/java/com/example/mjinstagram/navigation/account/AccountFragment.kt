@@ -3,6 +3,7 @@ package com.example.mjinstagram.navigation.account
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,8 +19,11 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.mjinstagram.LoginActivity
 import com.example.mjinstagram.MainActivity
 import com.example.mjinstagram.R
+import com.example.mjinstagram.data.AlarmDTO
 import com.example.mjinstagram.data.ContentDTO
+import com.example.mjinstagram.data.FollowDTO
 import com.example.mjinstagram.navigation.home.HomeFragment
+import com.example.mjinstagram.utill.FcmPush
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
@@ -27,7 +31,7 @@ import java.util.ArrayList
 import kotlinx.android.synthetic.main.fragment_account.view.*
 
 class AccountFragment : Fragment() {
-    var root : View ?= null
+    var root : View? = null
 
     var uid: String? = null
     var currentUserUid: String? = null
@@ -36,7 +40,12 @@ class AccountFragment : Fragment() {
     var auth: FirebaseAuth? = null
     var firestore: FirebaseFirestore? = null
 
-    val PICK_PROFILE_FROM_ALBUM = 10
+    var fcmPush: FcmPush? = null
+
+
+    companion object {
+        var PICK_PROFILE_FROM_ALBUM = 10
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -49,8 +58,18 @@ class AccountFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
+        fcmPush = FcmPush()
+
         root?.account_recyclerview?.adapter = AccountFragmentRecyclerViewAdapter()
         root?.account_recyclerview?.layoutManager = GridLayoutManager(activity, 3)
+
+        // Profile Image Click Listener
+        root?.account_iv_profile?.setOnClickListener {
+            //앨범 오픈
+            var photoPickerIntent = Intent(Intent.ACTION_PICK)
+            photoPickerIntent.type = "image/*"
+            activity?.startActivityForResult(photoPickerIntent, PICK_PROFILE_FROM_ALBUM)
+        }
 
         // User 비교 문
         userCompare()
@@ -58,46 +77,39 @@ class AccountFragment : Fragment() {
         // 프로필 이미지 업로드
         getProfileImage()
 
+        //Follower 카운트
+        getFollower()
+
         return root
     }
 
     fun userCompare() {
 
-
             // 본인 계정인 경우 -> 로그아웃, Toolbar 기본으로 설정
-            if (uid != null && uid == currentUserUid) {
+            if (uid == currentUserUid) {
 
-                root!!.account_btn_follow_signout.text = getString(R.string.signout)
+                root?.account_btn_follow_signout?.text = getString(R.string.signout)
                 root?.account_btn_follow_signout?.setOnClickListener {
-                    startActivity(Intent(activity, LoginActivity::class.java))
                     activity?.finish()
+                    startActivity(Intent(activity, LoginActivity::class.java))
                     auth?.signOut()
                 }
             } else {
-                root!!.account_btn_follow_signout.text = getString(R.string.follow)
+                root?.account_btn_follow_signout?.text = getString(R.string.follow)
 
                 var mainActivity = (activity as MainActivity)
-                mainActivity.toolbar_username.text = requireArguments().getString("userId")
-                mainActivity.toolbar_btn_back.setOnClickListener {
-                    mainActivity.bottom_nav.selectedItemId = R.id.navigation_home
-                }
 
                 mainActivity.toolbar_title_image.visibility = View.GONE
                 mainActivity.toolbar_btn_back.visibility = View.VISIBLE
                 mainActivity.toolbar_username.visibility = View.VISIBLE
 
-//                root?.account_btn_follow_signout?.setOnClickListener {
-//                    requestFollow()
-//                }
+                mainActivity.toolbar_username.text = arguments?.getString("userId")
+                mainActivity.toolbar_btn_back.setOnClickListener {
+                    mainActivity.bottom_nav.selectedItemId = R.id.navigation_home
+                }
 
-                // Profile Image Click Listener
-                root?.account_iv_profile?.setOnClickListener {
-                    if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                        //앨범 오픈
-                        var photoPickerIntent = Intent(Intent.ACTION_PICK)
-                        photoPickerIntent.type = "image/*"
-                        activity?.startActivityForResult(photoPickerIntent, PICK_PROFILE_FROM_ALBUM)
-                    }
+                root?.account_btn_follow_signout?.setOnClickListener {
+                    requestFollow()
                 }
             }
 
@@ -106,15 +118,122 @@ class AccountFragment : Fragment() {
     fun getProfileImage() {
         firestore?.collection("profileImages")?.document(uid!!)
                 ?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
-                    if(documentSnapshot == null)  return@addSnapshotListener
-                    if(documentSnapshot.data != null) {
-                        val url = documentSnapshot?.data!!["image"]
+
+                    if (documentSnapshot?.data != null) {
+                        var url = documentSnapshot?.data!!["image"]
+//                        activity!! 안먹음
                         Glide.with(requireActivity())
                                 .load(url)
-                                .apply(RequestOptions().circleCrop()).into(root!!.account_iv_profile)
+                                .apply(RequestOptions().circleCrop()).into(root?.account_iv_profile!!)
                     }
                 }
 
+    }
+
+    fun getFollower() {
+        firestore?.collection("users")?.document(uid!!)?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+            if (documentSnapshot == null) return@addSnapshotListener
+
+            val followDTO = documentSnapshot?.toObject(FollowDTO::class.java)
+
+            if(followDTO?.followingCount != null){
+                root?.account_tv_following_count?.text = followDTO?.followingCount.toString()
+            }
+
+            if(followDTO?.followerCount != null){
+                root?.account_tv_follower_count?.text = followDTO?.followerCount.toString()
+
+                if (followDTO?.followers?.containsKey(currentUserUid)!!) {
+
+                    root?.account_btn_follow_signout?.text = getString(R.string.follow_cancel)
+                    //activity!! 안먹음
+                    root?.account_btn_follow_signout?.background?.setColorFilter(ContextCompat.getColor(requireActivity(), R.color.colorLightGray), PorterDuff.Mode.MULTIPLY)
+                } else {
+                    if (uid != currentUserUid) {
+                        root?.account_btn_follow_signout?.text = getString(R.string.follow)
+                        root?.account_btn_follow_signout?.background?.colorFilter = null
+                    }
+                }
+            }
+        }
+    }
+
+    fun requestFollow() {
+
+        var tsDocFollowing = firestore!!.collection("users").document(currentUserUid!!)
+        firestore?.runTransaction { transaction ->
+
+            var followDTO = transaction.get(tsDocFollowing).toObject(FollowDTO::class.java)
+            if (followDTO == null) {
+
+                followDTO = FollowDTO()
+                followDTO.followingCount = 1
+                followDTO.followings[uid!!] = true
+
+                transaction.set(tsDocFollowing, followDTO)
+                return@runTransaction
+
+            }
+            // Unstar the post and remove self from stars
+            if (followDTO?.followings?.containsKey(uid)!!) {
+
+                followDTO?.followingCount = followDTO?.followingCount - 1
+                followDTO?.followings.remove(uid)
+            } else {
+
+                followDTO?.followingCount = followDTO?.followingCount + 1
+                followDTO?.followings[uid!!] = true
+                followerAlarm(uid!!)
+            }
+            transaction.set(tsDocFollowing, followDTO)
+            return@runTransaction
+        }
+
+        var tsDocFollower = firestore!!.collection("users").document(uid!!)
+        firestore?.runTransaction { transaction ->
+
+            var followDTO = transaction.get(tsDocFollower).toObject(FollowDTO::class.java)
+            if (followDTO == null) {
+
+                followDTO = FollowDTO()
+                followDTO!!.followerCount = 1
+                followDTO!!.followers[currentUserUid!!] = true
+
+
+                transaction.set(tsDocFollower, followDTO!!)
+                return@runTransaction
+            }
+
+            if (followDTO?.followers?.containsKey(currentUserUid!!)!!) {
+
+
+                followDTO!!.followerCount = followDTO!!.followerCount - 1
+                followDTO!!.followers.remove(currentUserUid!!)
+            } else {
+
+                followDTO!!.followerCount = followDTO!!.followerCount + 1
+                followDTO!!.followers[currentUserUid!!] = true
+
+            }// Star the post and add self to stars
+
+            transaction.set(tsDocFollower, followDTO!!)
+            return@runTransaction
+        }
+
+    }
+
+    fun followerAlarm(destinationUid: String) {
+
+        val alarmDTO = AlarmDTO()
+        alarmDTO.destinationUid = destinationUid
+        alarmDTO.userId = auth?.currentUser!!.email
+        alarmDTO.uid = auth?.currentUser!!.uid
+        alarmDTO.kind = 2
+        alarmDTO.timestamp = System.currentTimeMillis()
+
+        FirebaseFirestore.getInstance().collection("alarms").document().set(alarmDTO)
+        var message = auth?.currentUser!!.email + getString(R.string.alarm_follow)
+        fcmPush?.sendMessage(destinationUid, "알림 메세지 입니다.", message)
     }
 
     inner class AccountFragmentRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
