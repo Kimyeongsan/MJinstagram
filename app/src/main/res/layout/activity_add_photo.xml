@@ -11,6 +11,7 @@
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
+    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
@@ -70,6 +71,7 @@
         android:layout_below="@id/edittext"
         android:layout_margin="8dp"
         android:layout_toRightOf="@id/addphoto_image"
-        android:text="@string/upload_image" />
+        android:text="@string/upload_image"
+        android:theme="@style/ButtonStyle" />
 
 </RelativeLayout>

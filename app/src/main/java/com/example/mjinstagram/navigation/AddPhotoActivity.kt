@@ -1,32 +1,36 @@
-package com.example.mjinstagram.navigation.photo
+package com.example.mjinstagram.navigation
 
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mjinstagram.R
 import com.example.mjinstagram.data.ContentDTO
+
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.android.synthetic.main.acitivity_add_photo.*
+import kotlinx.android.synthetic.main.activity_add_photo.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PhotoActivity : AppCompatActivity() {
+class AddPhotoActivity : AppCompatActivity() {
+
     val PICK_IMAGE_FROM_ALBUM = 0
 
     var photoUri: Uri? = null
+
     var storage: FirebaseStorage? = null
     var firestore: FirebaseFirestore? = null
     private var auth: FirebaseAuth? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.acitivity_add_photo)
+        setContentView(R.layout.activity_add_photo)
 
         // Firebase storage
         storage = FirebaseStorage.getInstance()
@@ -70,7 +74,8 @@ class PhotoActivity : AppCompatActivity() {
         }
     }
 
-    fun contentUpload(){
+    fun contentUpload() {
+        progress_bar.visibility = View.VISIBLE
 
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val imageFileName = "JPEG_" + timeStamp + "_.png"
@@ -79,35 +84,38 @@ class PhotoActivity : AppCompatActivity() {
         storageRef?.putFile(photoUri!!)?.addOnSuccessListener {
             storageRef.downloadUrl.addOnSuccessListener { uri ->
 
-            Toast.makeText(this, getString(R.string.upload_success),
-                    Toast.LENGTH_SHORT).show()
-            val contentDTO = ContentDTO()
+                Toast.makeText(
+                    this, getString(R.string.upload_success),
+                    Toast.LENGTH_SHORT
+                ).show()
+                val contentDTO = ContentDTO()
 
-            //이미지 주소
-            contentDTO.imageUrl = uri.toString()
-            //유저의 UID
-            contentDTO.uid = auth?.currentUser?.uid
-            //게시물의 설명
-            contentDTO.explain = addphoto_edit_explain.text.toString()
-            //유저의 아이디
-            contentDTO.userId = auth?.currentUser?.email
-            //게시물 업로드 시간
-            contentDTO.timestamp = System.currentTimeMillis()
+                //이미지 주소
+                contentDTO.imageUrl = uri!!.toString()
+                //유저의 UID
+                contentDTO.uid = auth?.currentUser?.uid
+                //게시물의 설명
+                contentDTO.explain = addphoto_edit_explain.text.toString()
+                //유저의 아이디
+                contentDTO.userId = auth?.currentUser?.email
+                //게시물 업로드 시간
+                contentDTO.timestamp = System.currentTimeMillis()
 
-            //게시물을 데이터를 생성 및 엑티비티 종료
-            firestore?.collection("images")?.document()?.set(contentDTO)
+                //게시물을 데이터를 생성 및 엑티비티 종료
+                firestore?.collection("images")?.document()?.set(contentDTO)
 
-            setResult(Activity.RESULT_OK)
-            finish()
+                setResult(RESULT_OK)
+                finish()
             }
-        }
                 ?.addOnFailureListener {
                     progress_bar.visibility = View.GONE
 
-                    Toast.makeText(this, getString(R.string.upload_fail),
-                            Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this, getString(R.string.upload_fail),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
+        }
+
     }
-
-
 }

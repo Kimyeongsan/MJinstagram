@@ -1,8 +1,6 @@
-package com.example.mjinstagram.navigation.home
+package com.example.mjinstagram.navigation
 
-import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils.replace
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,26 +8,15 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.example.mjinstagram.MainActivity
 import com.example.mjinstagram.R
-import com.example.mjinstagram.data.AlarmDTO
 import com.example.mjinstagram.data.ContentDTO
-import com.example.mjinstagram.data.FollowDTO
-import com.example.mjinstagram.navigation.account.AccountFragment
-import com.example.mjinstagram.utill.FcmPush
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
-import com.squareup.okhttp.OkHttpClient
-
-import kotlinx.android.synthetic.main.acitivity_add_photo.*
-import kotlinx.android.synthetic.main.fragment_home.view.*
-import kotlinx.android.synthetic.main.item_home.view.*
+import kotlinx.android.synthetic.main.item_detail.view.*
+import kotlinx.android.synthetic.main.fragment_detail.view.*
 import java.util.ArrayList
 
-class HomeFragment : Fragment() {
+class DetailViewFragment : Fragment() {
 
     var firestore: FirebaseFirestore? = null
 
@@ -39,14 +26,14 @@ class HomeFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        mainview = LayoutInflater.from(activity).inflate(R.layout.fragment_home, container, false)
+        mainview = LayoutInflater.from(activity).inflate(R.layout.fragment_detail, container, false)
 
         firestore = FirebaseFirestore.getInstance()
 
         uid = FirebaseAuth.getInstance().currentUser?.uid
 
-        mainview?.home_recyclers?.adapter = HomeRecyclerViewAdapter()
-        mainview?.home_recyclers?.layoutManager = LinearLayoutManager(activity)
+        mainview?.detailviewfragment_recyclerview?.adapter = HomeRecyclerViewAdapter()
+        mainview?.detailviewfragment_recyclerview?.layoutManager = LinearLayoutManager(activity)
 
         return mainview
     }
@@ -73,7 +60,7 @@ class HomeFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_home, parent, false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_detail, parent, false)
             return CustomViewHolder(view)
         }
 
@@ -87,8 +74,8 @@ class HomeFragment : Fragment() {
 
             // 가운데 이미지
             Glide.with(holder.itemView.context)
-                    .load(contentDTOs[position].imageUrl)
-                    .into(viewHolder.detailviewitem_imageview_content)
+                .load(contentDTOs[position].imageUrl)
+                .into(viewHolder.detailviewitem_imageview_content)
 
             // 설명 텍스트
             viewHolder.detailviewitem_explain_textview.text = contentDTOs[position].explain
@@ -98,8 +85,8 @@ class HomeFragment : Fragment() {
 
             // 프로필 이미지
             Glide.with(holder.itemView.context)
-                    .load(contentDTOs[position].imageUrl)
-                    .into(viewHolder.detailviewitem_profile_image)
+                .load(contentDTOs[position].imageUrl)
+                .into(viewHolder.detailviewitem_profile_image)
 
             // 좋아요 이벤트
             viewHolder.detailviewitem_favorite_imageview.setOnClickListener { favoriteEvent(position) }
@@ -115,14 +102,14 @@ class HomeFragment : Fragment() {
             //UserFragment로 이동
             viewHolder.detailviewitem_profile_image.setOnClickListener {
 
-                val fragment = AccountFragment()
+                val fragment = UserFragment()
                 val bundle = Bundle()
 
                 bundle.putString("destinationUid", contentDTOs[position].uid)
                 bundle.putString("userId", contentDTOs[position].userId)
 
                 fragment.arguments = bundle
-                activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.nav_view, fragment)?.commit()
+                activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.bottom_navigation, fragment)?.commit()
             }
         }
 

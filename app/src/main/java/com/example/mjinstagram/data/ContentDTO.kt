@@ -1,5 +1,7 @@
 package com.example.mjinstagram.data
 
+import java.util.HashMap
+
 data class ContentDTO(var explain: String? = null,
                       var imageUrl: String? = null,
                       var uid: String? = null,
