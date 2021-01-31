@@ -92,12 +92,19 @@ class AddPhotoActivity : AppCompatActivity() {
 
                 //이미지 주소
                 contentDTO.imageUrl = uri!!.toString()
+
+                //이미지 주소
+                contentDTO.profile_imageUrl = uri!!.toString()
+
                 //유저의 UID
                 contentDTO.uid = auth?.currentUser?.uid
+
                 //게시물의 설명
                 contentDTO.explain = addphoto_edit_explain.text.toString()
+
                 //유저의 아이디
                 contentDTO.userId = auth?.currentUser?.email
+
                 //게시물 업로드 시간
                 contentDTO.timestamp = System.currentTimeMillis()
 

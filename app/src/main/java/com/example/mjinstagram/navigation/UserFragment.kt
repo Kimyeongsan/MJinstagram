@@ -81,7 +81,7 @@ class UserFragment : Fragment() {
                 }
             } else {
                 fragmentView!!.account_btn_follow_signout.text = getString(R.string.follow)
-                //view.account_btn_follow_signout.setOnClickListener{ requestFollow() }
+
                 var mainActivity = (activity as MainActivity)
                 mainActivity.toolbar_title_image.visibility = View.GONE
                 mainActivity.toolbar_btn_back.visibility = View.VISIBLE
@@ -127,7 +127,7 @@ class UserFragment : Fragment() {
                 ?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
 
                     if (documentSnapshot?.data != null) {
-                        val url = documentSnapshot?.data!!["image"]
+                        val url = documentSnapshot?.data!!["profileImages"]
                         Glide.with(requireActivity())
                                 .load(url)
                                 .apply(RequestOptions().circleCrop()).into(fragmentView!!.account_iv_profile)

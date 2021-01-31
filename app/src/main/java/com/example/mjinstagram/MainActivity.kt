@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                         return@continueWithTask storageRef.downloadUrl
                     }.addOnCompleteListener { url ->
                         var map = HashMap<String, Any>()
-                        map["image"] = url.toString()
+                        map["profileImages"] = url.toString()
                         FirebaseFirestore.getInstance().collection("profileImages").document(uid).set(map)
                     }
         }

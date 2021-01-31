@@ -85,7 +85,7 @@ class DetailViewFragment : Fragment() {
 
             // 프로필 이미지
             Glide.with(holder.itemView.context)
-                .load(contentDTOs[position].imageUrl)
+                .load(contentDTOs[position].profile_imageUrl)
                 .into(viewHolder.detailviewitem_profile_image)
 
             // 좋아요 이벤트
